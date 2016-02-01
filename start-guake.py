@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
 # -*- coding: utf-8 -*-
 #====================================================================#
 #   DESCRIPTION:  open some desktop tools in guake tags
@@ -13,7 +13,7 @@
 #====================================================================#
 
 __VERSION__ = '0.1.1'
-__UPDATED__ = '2015-04-15 19:03:58 ybyygu'
+__UPDATED__ = '2016-02-01 09:49:06 ybyygu'
 
 import os
 import dbus
@@ -51,16 +51,68 @@ def add_tabs(remote_object):
     # use gconf-editor to disable apps/guake/use_vte_titles;
     # if not rename cmd will lose effect
     remote_object.rename_current_tab("sys")
+    
     # open screen session
-    remote_object.execute_command("screen -dm sslocal -c shadowsocks/config.jp109")
+    # screen -a -A -D -R core
+    #remote_object.execute_command("screen -a -A -D -R gwp -dm sslocal -c shadowsocks/config.jp109")
+    #remote_object.execute_command("tmux new -d -n emacs 'emacs /home/ybyygu/Notes/todo.note'")
+    #remote_object.execute_command("emacs /home/ybyygu/Notes/todo.note")
+    
+    # music daemon
+    #mpd ~/.mpd/config
+
+    #conky
+
+    # task manager
+    #glista &
+
+    # zotero helper
+    #glocator &
+
+    # emacs server
+    # commented at 2011/05/21; "emacsclient -c" will create daemon at the first place if necessary
+    # emacsclient -e "(kill-emacs)"; LC_CTYPE=zh_CN.utf8 emacs --daemon
+
+    # mouse controller
+    # quite unstable. disabled at 2012-08-12
+    #imwheel -k -b '0 0 0 0 8 9'
+    #easystroke &
+
+    # my notification daemon
+    #gnotifier.py -d &
+    #sleep 1
+
+    # must be started before lsyncd (launched by start-guake.py)
+    #boost-firefox.py
+
+    # open screen session backgroundly
+    #screen -dm
+    # maximus windows area
+
+    #maximus &
+
+    # check my mails
+    #$HOME/bin/gmail-checker.py &
+
+    #osmo &
+
+    remote_object.add_tab()
+    remote_object.rename_current_tab("proxy")
+    remote_object.execute_command("~/etc/proxy/shadowsocks/start-ss.sh")
     
     remote_object.add_tab()
     remote_object.rename_current_tab("backup")
-    # remote_object.execute_command("nice -n 10 gmail-checker.py")
-    # remote_object.execute_command("ionice -c 3 start-lsyncd.sh")
-    # remote_object.execute_command("nice -n 15 isync-dwim")
+    # reduce io delay
+    remote_object.execute_command("ionice -c 3 ~/etc/backup/start-lsyncd.sh")
+
+    remote_object.add_tab()
+    remote_object.rename_current_tab("workrave")
+    remote_object.execute_command("workrave")
     
-        
+    remote_object.add_tab()
+    remote_object.rename_current_tab("dropbox")    
+    remote_object.execute_command("dropbox")
+
 def main():
     remote_object, already_running = start_guake()
     
