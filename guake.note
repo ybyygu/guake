@@ -1,0 +1,185 @@
+#+TITLE: 使用guake来启动桌面程序.
+#+SETUPFILE: ~/Notes/common.org
+#+SETUPFILE: ~/Notes/coding.org
+
+* Memo
+** [2017-10-24 Tue] 将之前的python代码纳入到org中
+
+* install
+need gconf-editor to set up special tricks
+
+#+name: 2e802c12-6947-4c67-99d7-aeb51e0cbee9
+#+BEGIN_SRC shell
+  # do not update tab name
+  gconftool-2 --type bool --set /apps/guake/general/use_vte_titles false
+  # do not show tray icon
+  gconftool-2 --type bool --set /apps/guake/general/use_trayicon false
+  # avoid errors: "org.freedesktop.Notifications"
+  # http://guake.org/ticket/468
+  # fixed?
+  #gconftool-2 --type bool --set /apps/guake/general/use_popup false
+#+END_SRC
+
+* start-guake.py
+:PROPERTIES:
+:header-args: :tangle ~/.local/bin/start-guake.py :shebang #! /usr/bin/env python :mkdirp yes :padline yes :comments link
+:END:
+
+** header
+#+name: 648a338e-cc21-4aed-908f-2fe014b65ece
+#+begin_src python
+  # -*- coding: utf-8 -*-
+  #====================================================================#
+  #   DESCRIPTION:  open some desktop tools in guake tags
+  #
+  #       OPTIONS:  ---
+  #  REQUIREMENTS:  ---
+  #         NOTES:  guake should not be started before this script
+  #        AUTHOR:  Wenping Guo (ybyygu)
+  #         EMAIL:  winpng@gmail.com
+  #       LICENCE:  GPL version 2 or upper
+  #       CREATED:  2010-11-02 14:39
+  #====================================================================#
+
+#+end_src
+** globals
+#+name: 4a0758fd-1722-4c72-9262-1d906556c5d5
+#+begin_src python
+  __VERSION__ = '0.1.1'
+  __UPDATED__ = '2016-02-01 09:49:06 ybyygu'
+
+  import os
+  import dbus
+  import gtk
+  import sys
+  import time
+
+  import guake.main
+  from guake.dbusiface import DBUS_NAME
+  from guake.dbusiface import DBUS_PATH
+  from guake.dbusiface import DbusManager
+  from guake.guake_app import Guake
+
+#+end_src
+** add tabs
+#+name: 4aa333ff-9989-4938-a1b9-429fd1cf12e1
+#+begin_src python
+  def add_tabs(remote_object):
+      ##
+      # gmail checker
+      # --------------------------------------------------------------------
+      # use gconf-editor to disable apps/guake/use_vte_titles;
+      # if not rename cmd will lose effect
+      remote_object.rename_current_tab("sys")
+
+      remote_object.add_tab()
+      remote_object.rename_current_tab("proxy")
+      remote_object.execute_command("sslocal -c ~/Install/configs/proxy/shadowsocks/config.default")
+      time.sleep(5)
+
+      remote_object.add_tab()
+      remote_object.rename_current_tab("backup")
+      # reduce io delay
+      remote_object.execute_command("ionice -c 3 ~/Backup/start-lsyncd.sh")
+
+      remote_object.add_tab()
+      remote_object.rename_current_tab("dropbox")
+      remote_object.execute_command("sleep 30 && dropbox")
+
+#+end_src
+
+废弃的启动项:
+#+header: :tangle no
+#+name: 16655fec-db08-4592-ad2d-a598014ae473
+#+begin_src python
+  # music daemon
+  #mpd ~/.mpd/config
+
+  # task manager
+  #glista &
+
+  # zotero helper
+  #glocator &
+
+  # emacs server
+  # commented at 2011/05/21; "emacsclient -c" will create daemon at the first place if necessary
+  # emacsclient -e "(kill-emacs)"; LC_CTYPE=zh_CN.utf8 emacs --daemon
+
+  # mouse controller
+  # quite unstable. disabled at 2012-08-12
+  #imwheel -k -b '0 0 0 0 8 9'
+  #easystroke &
+
+  # my notification daemon
+  #gnotifier.py -d &
+  #sleep 1
+
+  # must be started before lsyncd (launched by start-guake.py)
+  #boost-firefox.py
+
+  # open screen session backgroundly
+  #screen -dm
+
+  # check my mails
+  #$HOME/bin/gmail-checker.py &
+#+end_src
+
+** main
+#+name: bc16e801-32b3-48c1-9241-6fa586882570
+#+begin_src python
+  def start_guake():
+      ##
+      # find dbus object from the running instance
+      # --------------------------------------------------------------------
+      try:
+          bus = dbus.SessionBus()
+          remote_object = bus.get_object(DBUS_NAME, DBUS_PATH)
+          print("already running")
+          already_running = True
+      except dbus.DBusException:
+          instance = Guake()
+          remote_object = DbusManager(instance)
+          print("no running instance found")
+          already_running = False
+
+      return remote_object, already_running
+
+#+end_src
+
+#+name: b3f9cba8-d656-43fa-8ec1-eb204d2d2750
+#+begin_src python
+  def main():
+      remote_object, already_running = start_guake()
+
+      if not already_running:
+          add_tabs(remote_object)
+          gtk.main()
+
+  if __name__ == '__main__':
+      main()
+#+end_src
+
+* guake.desktop
+:PROPERTIES:
+:header-args: :tangle ~/.config/autostart/guake.desktop :mkdirp yes
+:END:
+
+#+name: 3621e8ae-0af0-4335-b08a-a0bc97ffcd9a
+#+BEGIN_SRC text
+  [Desktop Entry]
+  Type=Application
+  X-GNOME-Autostart-enabled=true
+  Exec=/home/ybyygu/.local/bin/start-guake.py
+  Icon=guake
+  Name=Start Guake in GWP way
+  GenericName=Guake tabs
+  StartupNotify=true
+  Version=1.1
+  Categories=Utility;
+#+END_SRC
+
+* Local variables
+# Emacs:
+# Local Variables:
+# mode: org
+# End:
