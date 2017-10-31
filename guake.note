@@ -170,7 +170,7 @@ need gconf-editor to set up special tricks
   [Desktop Entry]
   Type=Application
   X-GNOME-Autostart-enabled=true
-  Exec=/home/ybyygu/.local/bin/start-guake.py
+  Exec=start-guake.py
   Icon=guake
   Name=Start Guake in GWP way
   GenericName=Guake tabs
