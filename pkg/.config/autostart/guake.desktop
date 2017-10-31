@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+X-GNOME-Autostart-enabled=true
+Exec=start-guake.py
+Icon=guake
+Name=Start Guake in GWP way
+GenericName=Guake tabs
+StartupNotify=true
+Version=1.1
+Categories=Utility;

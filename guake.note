@@ -20,9 +20,23 @@ need gconf-editor to set up special tricks
   #gconftool-2 --type bool --set /apps/guake/general/use_popup false
 #+END_SRC
 
+** makefile
+使用gnu stow来将pkg目录下的文件安装symlink到$HOME
+
+#+header: :tangle makefile
+#+name: e15fb2e8-3a89-4ebe-b788-3135e14bc564
+#+BEGIN_SRC makefile -i
+install: stow
+	stow --verbose --adopt --no-folding --target ~/ pkg
+uninstall:
+	stow --verbose --target ~/ --delete pkg
+stow:
+	which stow
+#+END_SRC
+
 * start-guake.py
 :PROPERTIES:
-:header-args: :tangle ~/.local/bin/start-guake.py :shebang #! /usr/bin/env python :mkdirp yes :padline yes :comments link
+:header-args: :tangle pkg/.local/bin/start-guake.py :shebang #! /usr/bin/env python :mkdirp yes :padline yes :comments link
 :END:
 
 ** header
@@ -162,7 +176,7 @@ need gconf-editor to set up special tricks
 
 * guake.desktop
 :PROPERTIES:
-:header-args: :tangle ~/.config/autostart/guake.desktop :mkdirp yes
+:header-args: :tangle pkg/.config/autostart/guake.desktop :mkdirp yes
 :END:
 
 #+name: 3621e8ae-0af0-4335-b08a-a0bc97ffcd9a
