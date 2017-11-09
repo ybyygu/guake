@@ -36,8 +36,10 @@ stow:
 
 * start-guake.py
 :PROPERTIES:
-:header-args: :tangle pkg/.local/bin/start-guake.py :shebang #! /usr/bin/env python :mkdirp yes :padline yes :comments link
+:header-args: :tangle pkg/.local/bin/start-guake.py :shebang #! /usr/bin/env python2 :mkdirp yes :padline yes :comments link
 :END:
+
+注意, guake使用的是python2
 
 ** header
 #+name: 648a338e-cc21-4aed-908f-2fe014b65ece

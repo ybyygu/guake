@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
 # [[file:~/Install/configs/guake/guake.note::648a338e-cc21-4aed-908f-2fe014b65ece][648a338e-cc21-4aed-908f-2fe014b65ece]]
 # -*- coding: utf-8 -*-
 #====================================================================#
@@ -11,7 +11,7 @@
 #         EMAIL:  winpng@gmail.com
 #       LICENCE:  GPL version 2 or upper
 #       CREATED:  <2010-11-02 Tue 14:39>
-#       UPDATED:  <2017-10-31 Tue 09:56>
+#       UPDATED:  <2017-11-09 Thu 11:01>
 #====================================================================#
 # 648a338e-cc21-4aed-908f-2fe014b65ece ends here
 
