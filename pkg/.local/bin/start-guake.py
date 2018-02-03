@@ -1,4 +1,4 @@
-#! /usr/bin/env python2
+#! /usr/bin/env python3
 # [[file:~/Install/configs/guake/guake.note::648a338e-cc21-4aed-908f-2fe014b65ece][648a338e-cc21-4aed-908f-2fe014b65ece]]
 # -*- coding: utf-8 -*-
 #====================================================================#
@@ -11,17 +11,13 @@
 #         EMAIL:  winpng@gmail.com
 #       LICENCE:  GPL version 2 or upper
 #       CREATED:  <2010-11-02 Tue 14:39>
-#       UPDATED:  <2017-11-09 Thu 11:01>
+#       UPDATED:  <2018-02-03 Sat 11:26>
 #====================================================================#
 # 648a338e-cc21-4aed-908f-2fe014b65ece ends here
 
 # [[file:~/Install/configs/guake/guake.note::4a0758fd-1722-4c72-9262-1d906556c5d5][4a0758fd-1722-4c72-9262-1d906556c5d5]]
-__VERSION__ = '0.1.1'
-__UPDATED__ = '2016-02-01 09:49:06 ybyygu'
-
 import os
 import dbus
-import gtk
 import sys
 import time
 
@@ -77,11 +73,14 @@ def start_guake():
 
 # [[file:~/Install/configs/guake/guake.note::b3f9cba8-d656-43fa-8ec1-eb204d2d2750][b3f9cba8-d656-43fa-8ec1-eb204d2d2750]]
 def main():
-    remote_object, already_running = start_guake()
+    import gi
+    gi.require_version('Gtk', '3.0')
+    from gi.repository import Gtk
 
+    remote_object, already_running = start_guake()
     if not already_running:
         add_tabs(remote_object)
-        gtk.main()
+        Gtk.main()
 
 if __name__ == '__main__':
     main()

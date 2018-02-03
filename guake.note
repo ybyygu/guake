@@ -3,11 +3,21 @@
 #+SETUPFILE: ~/Notes/coding.org
 
 * Memo
+** [2018-02-03 Sat] 更新至python3版本
+guake升级了, 需要修改下代码.
+
 ** [2017-10-24 Tue] 将之前的python代码纳入到org中
 
 * install
-need gconf-editor to set up special tricks
+#+name: aa6de558-fc95-42bb-9d13-b9c3f308ce9f
+#+begin_src shell
+  # do not update tab name
+  dconf write /apps/guake/general/use-vte-titles false
+  # do not show tray icon
+  dconf write /apps/guake/general/use-trayicon false
+#+end_src
 
+旧版适用:
 #+name: 2e802c12-6947-4c67-99d7-aeb51e0cbee9
 #+BEGIN_SRC shell
   # do not update tab name
@@ -36,10 +46,10 @@ stow:
 
 * start-guake.py
 :PROPERTIES:
-:header-args: :tangle pkg/.local/bin/start-guake.py :shebang #! /usr/bin/env python2 :mkdirp yes :padline yes :comments link
+:header-args: :tangle pkg/.local/bin/start-guake.py :shebang #! /usr/bin/env python3 :mkdirp yes :padline yes :comments link
 :END:
 
-注意, guake使用的是python2
+[2018-02-03 Sat] guake升级到了python3.
 
 ** header
 #+name: 648a338e-cc21-4aed-908f-2fe014b65ece
@@ -59,15 +69,12 @@ stow:
   #====================================================================#
 
 #+end_src
+
 ** globals
 #+name: 4a0758fd-1722-4c72-9262-1d906556c5d5
 #+begin_src python
-  __VERSION__ = '0.1.1'
-  __UPDATED__ = '2016-02-01 09:49:06 ybyygu'
-
   import os
   import dbus
-  import gtk
   import sys
   import time
 
@@ -166,11 +173,14 @@ stow:
 #+name: b3f9cba8-d656-43fa-8ec1-eb204d2d2750
 #+begin_src python
   def main():
-      remote_object, already_running = start_guake()
+      import gi
+      gi.require_version('Gtk', '3.0')
+      from gi.repository import Gtk
 
+      remote_object, already_running = start_guake()
       if not already_running:
           add_tabs(remote_object)
-          gtk.main()
+          Gtk.main()
 
   if __name__ == '__main__':
       main()
